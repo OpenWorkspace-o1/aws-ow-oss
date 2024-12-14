@@ -39,7 +39,6 @@ export class AwsOpensearchServerlessStack extends cdk.Stack {
     const vpcSubnetSelection: SubnetSelection = vpc.selectSubnets({
       subnets: vpcPrivateISubnets,
       availabilityZones: props.vpcPrivateSubnetAzs,
-      subnetType: vpcSubnetType,
     });
 
     const kmsKey = new kms.Key(this, `${props.resourcePrefix}-OS-KMS-Key`, {
@@ -72,6 +71,11 @@ export class AwsOpensearchServerlessStack extends cdk.Stack {
         volumeSize: 10,
         volumeType: ec2.EbsDeviceVolumeType.GENERAL_PURPOSE_SSD_GP3,
       },
+      zoneAwareness: {
+        enabled: true,
+        availabilityZoneCount: 3,
+      },
+      useUnsignedBasicAuth: false,
     });
 
     // export opensearchDomain domain
