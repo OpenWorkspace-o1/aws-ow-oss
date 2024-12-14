@@ -6,6 +6,7 @@ import { Construct } from 'constructs';
 import { AwsOpensearchServerlessStackProps } from './AwsOpensearchServerlessStackProps';
 import { parseVpcSubnetType } from '../utils/vpc-type-parser';
 import { SubnetSelection } from 'aws-cdk-lib/aws-ec2';
+import { SecretValue } from 'aws-cdk-lib';
 
 export class AwsOpensearchServerlessStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: AwsOpensearchServerlessStackProps) {
@@ -54,12 +55,18 @@ export class AwsOpensearchServerlessStack extends cdk.Stack {
       vpcSubnets: [vpcSubnetSelection],
       version: opensearch.EngineVersion.OPENSEARCH_2_17,
       enableAutoSoftwareUpdate: true,
+      enableVersionUpgrade: true,
       encryptionAtRest: {
         kmsKey: kmsKey,
         enabled: true,
       },
       nodeToNodeEncryption: true,
       enforceHttps: true,
+      fineGrainedAccessControl: {
+        masterUserName: props.opensearchUserName,
+        masterUserPassword: SecretValue.unsafePlainText(props.opensearchUserPassword),
+      },
+      removalPolicy: cdk.RemovalPolicy.DESTROY,
     });
   }
 }
