@@ -1,5 +1,6 @@
 import * as cdk from 'aws-cdk-lib';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
+import * as iam from 'aws-cdk-lib/aws-iam';
 import * as kms from 'aws-cdk-lib/aws-kms';
 import * as opensearch from 'aws-cdk-lib/aws-opensearchservice';
 import { Construct } from 'constructs';
@@ -76,6 +77,36 @@ export class AwsOpensearchServerlessStack extends cdk.Stack {
         availabilityZoneCount: 3,
       },
       useUnsignedBasicAuth: false,
+      accessPolicies: [
+        new iam.PolicyStatement({
+          effect: iam.Effect.ALLOW,
+          actions: ['es:ESHttp*'],
+          principals: [new iam.AccountRootPrincipal()],
+          resources: ['*'],
+        }),
+        new iam.PolicyStatement({
+          effect: iam.Effect.DENY,
+          principals: [new iam.AnyPrincipal()],
+          actions: ['es:*'],
+          resources: ['*'],
+          conditions: {
+            'Bool': {
+              'aws:SecureTransport': 'false'
+            }
+          }
+        }),
+        new iam.PolicyStatement({
+          effect: iam.Effect.ALLOW,
+          principals: [new iam.AnyPrincipal()],
+          actions: ['es:*'],
+          resources: ['*'],
+          conditions: {
+            'IpAddress': {
+              'aws:SourceIp': vpc.vpcCidrBlock
+            }
+          }
+        }),
+      ],
     });
 
     // export opensearchDomain domain
