@@ -18,22 +18,22 @@ export class AwsOpensearchServerlessStack extends cdk.Stack {
 
     // define subnetAttributes as an array of Record<string, string> with subnetId comes from props.vpcPrivateSubnetIds and availabilityZone comes from props.vpcPrivateSubnetAzs
     const subnetAttributes: Record<string, string>[] = props.vpcPrivateSubnetIds.map((subnetId, index) => {
-        return {
-            subnetId: subnetId,
-            availabilityZone: props.vpcPrivateSubnetAzs[index],
-            routeTableId: props.vpcPrivateSubnetRouteTableIds[index],
-            type: vpcSubnetType,
-        };
+      return {
+        subnetId: subnetId,
+        availabilityZone: props.vpcPrivateSubnetAzs[index],
+        routeTableId: props.vpcPrivateSubnetRouteTableIds[index],
+        type: vpcSubnetType,
+      };
     });
     console.log('subnetAttributes:', JSON.stringify(subnetAttributes));
 
     // retrieve subnets from vpc
     const vpcPrivateISubnets: cdk.aws_ec2.ISubnet[] = subnetAttributes.map((subnetAttribute) => {
-        return ec2.Subnet.fromSubnetAttributes(this, subnetAttribute.subnetId, {
-            subnetId: subnetAttribute.subnetId,
-            availabilityZone: subnetAttribute.availabilityZone,
-            routeTableId: subnetAttribute.routeTableId,
-        });
+      return ec2.Subnet.fromSubnetAttributes(this, subnetAttribute.subnetId, {
+        subnetId: subnetAttribute.subnetId,
+        availabilityZone: subnetAttribute.availabilityZone,
+        routeTableId: subnetAttribute.routeTableId,
+      });
     });
     const vpcSubnetSelection: SubnetSelection = vpc.selectSubnets({
       subnets: vpcPrivateISubnets,
@@ -41,9 +41,12 @@ export class AwsOpensearchServerlessStack extends cdk.Stack {
       subnetType: vpcSubnetType,
     });
 
-    const kmsKey = new kms.Key(this, `${props.resourcePrefix}-KMS-Key`, {
+    const kmsKey = new kms.Key(this, `${props.resourcePrefix}-OS-KMS-Key`, {
       enableKeyRotation: true,
       removalPolicy: cdk.RemovalPolicy.DESTROY,
+      enabled: true,
+      keyUsage: kms.KeyUsage.ENCRYPT_DECRYPT,
+      keySpec: kms.KeySpec.SYMMETRIC_DEFAULT,
     });
 
     const opensearchDomain = new opensearch.Domain(this, `${props.resourcePrefix}-OpenSearchDomain`, {
@@ -51,6 +54,12 @@ export class AwsOpensearchServerlessStack extends cdk.Stack {
       vpcSubnets: [vpcSubnetSelection],
       version: opensearch.EngineVersion.OPENSEARCH_2_11,
       enableAutoSoftwareUpdate: true,
+      encryptionAtRest: {
+        kmsKey: kmsKey,
+        enabled: true,
+      },
+      nodeToNodeEncryption: true,
+      enforceHttps: true,
     });
   }
 }
