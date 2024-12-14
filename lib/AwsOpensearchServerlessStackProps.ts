@@ -1,6 +1,6 @@
-import { StackProps } from "aws-cdk-lib";
+import { StackProps } from "aws-cdk-lib"
 
-export interface AwsOpensearchServerlessStackProps extends StackProps {
+export interface AwsOpensearchServerlessBaseStackProps {
     /**
      * Prefix used for naming AWS resources
      * Example: "myapp-prod"
@@ -36,7 +36,9 @@ export interface AwsOpensearchServerlessStackProps extends StackProps {
      * Example: "platform-team"
      */
     readonly owner: string;
+}
 
+export interface AwsOpensearchServerlessStackProps extends StackProps, AwsOpensearchServerlessBaseStackProps {
     /**
      * Type of VPC subnet to use (PUBLIC, PRIVATE, or ISOLATED)
      * Example: "PRIVATE"
@@ -48,4 +50,22 @@ export interface AwsOpensearchServerlessStackProps extends StackProps {
      * Example: "vpc-1234567890abcdef0"
      */
     readonly vpcId: string;
+
+    /**
+     * IDs of the private subnets
+     * Example: ["subnet-1234567890abcdef0", "subnet-1234567890abcdef1"]
+     */
+    readonly vpcPrivateSubnetIds: string[];
+
+    /**
+     * Availability zones of the private subnets
+     * Example: ["us-east-1a", "us-east-1b"]
+     */
+    readonly vpcPrivateSubnetAzs: string[];
+
+    /**
+     * Route table IDs of the private subnets
+     * Example: ["rtb-1234567890abcdef0", "rtb-1234567890abcdef1"]
+     */
+    readonly vpcPrivateSubnetRouteTableIds: string[];
 }
