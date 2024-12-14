@@ -52,7 +52,7 @@ export class AwsOpensearchServerlessStack extends cdk.Stack {
     const opensearchDomain = new opensearch.Domain(this, `${props.resourcePrefix}-OpenSearchDomain`, {
       vpc: vpc,
       vpcSubnets: [vpcSubnetSelection],
-      version: opensearch.EngineVersion.OPENSEARCH_2_11,
+      version: opensearch.EngineVersion.OPENSEARCH_2_17,
       enableAutoSoftwareUpdate: true,
       encryptionAtRest: {
         kmsKey: kmsKey,
