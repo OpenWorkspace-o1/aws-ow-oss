@@ -67,6 +67,18 @@ export class AwsOpensearchServerlessStack extends cdk.Stack {
         masterUserPassword: SecretValue.unsafePlainText(props.opensearchUserPassword),
       },
       removalPolicy: cdk.RemovalPolicy.DESTROY,
+      ebs: {
+        enabled: true,
+        volumeSize: 10,
+        volumeType: ec2.EbsDeviceVolumeType.GENERAL_PURPOSE_SSD_GP3,
+      },
+    });
+
+    // export opensearchDomain domain
+    new cdk.CfnOutput(this, `${props.resourcePrefix}-OpenSearchDomain-Output`, {
+      value: opensearchDomain.domainEndpoint,
+      exportName: `${props.resourcePrefix}-OpenSearchDomain-Endpoint`,
+      description: 'OpenSearch Domain Endpoint',
     });
   }
 }
