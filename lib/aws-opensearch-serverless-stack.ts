@@ -2,6 +2,7 @@ import * as cdk from 'aws-cdk-lib';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import * as kms from 'aws-cdk-lib/aws-kms';
+import * as logs from 'aws-cdk-lib/aws-logs';
 import * as opensearch from 'aws-cdk-lib/aws-opensearchservice';
 import { Construct } from 'constructs';
 import { AwsOpensearchServerlessStackProps } from './AwsOpensearchServerlessStackProps';
@@ -86,11 +87,31 @@ export class AwsOpensearchServerlessStack extends cdk.Stack {
       },
       useUnsignedBasicAuth: false,
       capacity: {
-        masterNodes: 1,
+        // 3 master nodes
+        masterNodes: 3,
         masterNodeInstanceType: 'C7g.large.search',
+        // 3 data nodes
         dataNodes: 3,
         dataNodeInstanceType: 'C7g.large.search',
         multiAzWithStandbyEnabled: false,
+        // read more at https://docs.aws.amazon.com/opensearch-service/latest/developerguide/supported-instance-types.html
+      },
+      logging: {
+        slowSearchLogEnabled: true,
+        slowIndexLogEnabled: true,
+        appLogEnabled: true,
+        slowSearchLogGroup: new logs.LogGroup(this, `${props.resourcePrefix}-OS-SlowSearchLogs`, {
+          retention: logs.RetentionDays.ONE_MONTH,
+          removalPolicy: cdk.RemovalPolicy.DESTROY,
+        }),
+        slowIndexLogGroup: new logs.LogGroup(this, `${props.resourcePrefix}-OS-SlowIndexLogs`, {
+          retention: logs.RetentionDays.ONE_MONTH,
+          removalPolicy: cdk.RemovalPolicy.DESTROY,
+        }),
+        appLogGroup: new logs.LogGroup(this, `${props.resourcePrefix}-OS-AppLogs`, {
+          retention: logs.RetentionDays.ONE_MONTH,
+          removalPolicy: cdk.RemovalPolicy.DESTROY,
+        }),
       },
       accessPolicies: [
         new iam.PolicyStatement({
