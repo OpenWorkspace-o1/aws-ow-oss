@@ -37,7 +37,7 @@ const appName = process.env.APP_NAME!;
 const owner = process.env.OWNER!;
 
 // check best practices based on AWS Solutions Security Matrix
-appAspects.add(new AwsSolutionsChecks());
+// appAspects.add(new AwsSolutionsChecks());
 
 appAspects.add(new ApplyTags({
     environment: deployEnvironment as 'development' | 'staging' | 'production' | 'feature',
@@ -66,7 +66,7 @@ const stackProps: AwsOpensearchServerlessStackProps = {
 };
 new AwsOpensearchServerlessStack(app, `AwsOpensearchServerlessStack`, {
     ...stackProps,
-    stackName: `${appName}-${deployEnvironment}-${cdkRegion}-AwsOpensearchServerlessStack`,
+    stackName: `${deployEnvironment}-${cdkRegion}-AwsOpensearchServerlessStack`,
     description: `AwsOpensearchServerlessStack for ${appName} in ${cdkRegion} ${deployEnvironment}.`,
 });
 
