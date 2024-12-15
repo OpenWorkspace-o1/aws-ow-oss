@@ -1,6 +1,5 @@
 import * as cdk from 'aws-cdk-lib';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
-import * as iam from 'aws-cdk-lib/aws-iam';
 import * as kms from 'aws-cdk-lib/aws-kms';
 import * as logs from 'aws-cdk-lib/aws-logs';
 import * as opensearch from 'aws-cdk-lib/aws-opensearchservice';
@@ -115,11 +114,32 @@ export class AwsOpensearchServerlessStack extends cdk.Stack {
       },
     });
 
-    // export opensearchDomain domain
-    new cdk.CfnOutput(this, `${props.resourcePrefix}-OpenSearchDomain-Output`, {
+    // export opensearchDomain domain endpoint
+    new cdk.CfnOutput(this, `${props.resourcePrefix}-OpenSearchDomain-Endpoint-Output`, {
       value: opensearchDomain.domainEndpoint,
       exportName: `${props.resourcePrefix}-OpenSearchDomain-Endpoint`,
       description: 'OpenSearch Domain Endpoint',
+    });
+
+    // export opensearchDomain domain name
+    new cdk.CfnOutput(this, `${props.resourcePrefix}-OpenSearchDomain-Name-Output`, {
+      value: opensearchDomain.domainName,
+      exportName: `${props.resourcePrefix}-OpenSearchDomain-Name`,
+      description: 'OpenSearch Domain Name',
+    });
+
+    // export kmsKey key id
+    new cdk.CfnOutput(this, `${props.resourcePrefix}-OpenSearch-KMS-Key-Id-Output`, {
+      value: kmsKey.keyId,
+      exportName: `${props.resourcePrefix}-OpenSearch-KMS-Key-Id`,
+      description: 'OpenSearch KMS Key Id',
+    });
+
+    // export kmsKey key arn
+    new cdk.CfnOutput(this, `${props.resourcePrefix}-OpenSearch-KMS-Key-Arn-Output`, {
+      value: kmsKey.keyArn,
+      exportName: `${props.resourcePrefix}-OpenSearch-KMS-Key-Arn`,
+      description: 'OpenSearch KMS Key Arn',
     });
   }
 }
