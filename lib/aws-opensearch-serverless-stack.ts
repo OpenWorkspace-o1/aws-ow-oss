@@ -113,36 +113,6 @@ export class AwsOpensearchServerlessStack extends cdk.Stack {
           removalPolicy: cdk.RemovalPolicy.DESTROY,
         }),
       },
-      accessPolicies: [
-        new iam.PolicyStatement({
-          effect: iam.Effect.ALLOW,
-          actions: ['es:ESHttp*'],
-          principals: [new iam.AccountRootPrincipal()],
-          resources: ['*'],
-        }),
-        new iam.PolicyStatement({
-          effect: iam.Effect.DENY,
-          principals: [new iam.AnyPrincipal()],
-          actions: ['es:*'],
-          resources: ['*'],
-          conditions: {
-            'Bool': {
-              'aws:SecureTransport': 'false'
-            }
-          }
-        }),
-        new iam.PolicyStatement({
-          effect: iam.Effect.ALLOW,
-          principals: [new iam.AnyPrincipal()],
-          actions: ['es:*'],
-          resources: ['*'],
-          conditions: {
-            'IpAddress': {
-              'aws:SourceIp': vpc.vpcCidrBlock
-            }
-          }
-        }),
-      ],
     });
 
     // export opensearchDomain domain
