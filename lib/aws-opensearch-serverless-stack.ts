@@ -116,7 +116,7 @@ export class AwsOpensearchServerlessStack extends cdk.Stack {
 
     // export opensearchDomain domain endpoint
     new cdk.CfnOutput(this, `${props.resourcePrefix}-OpenSearchDomain-Endpoint-Output`, {
-      value: opensearchDomain.domainEndpoint,
+      value: `https://${opensearchDomain.domainEndpoint}`,
       exportName: `${props.resourcePrefix}-OpenSearchDomain-Endpoint`,
       description: 'OpenSearch Domain Endpoint',
     });
