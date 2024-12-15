@@ -10,5 +10,7 @@ declare module NodeJS {
         VPC_PRIVATE_SUBNET_IDS: string;
         VPC_PRIVATE_SUBNET_AZS: string;
         VPC_PRIVATE_SUBNET_ROUTE_TABLE_IDS: string;
+        OPENSEARCH_USER_NAME: string;
+        OPENSEARCH_USER_PASSWORD: string;
     }
 }

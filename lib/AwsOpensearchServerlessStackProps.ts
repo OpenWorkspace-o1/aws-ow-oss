@@ -68,4 +68,16 @@ export interface AwsOpensearchServerlessStackProps extends StackProps, AwsOpense
      * Example: ["rtb-1234567890abcdef0", "rtb-1234567890abcdef1"]
      */
     readonly vpcPrivateSubnetRouteTableIds: string[];
+
+    /**
+     * Username for the OpenSearch domain
+     * Example: "admin"
+     */
+    readonly opensearchUserName: string;
+
+    /**
+     * Password for the OpenSearch domain
+     * Example: "admin"
+     */
+    readonly opensearchUserPassword: string;
 }
