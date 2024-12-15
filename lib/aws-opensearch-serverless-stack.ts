@@ -50,8 +50,16 @@ export class AwsOpensearchServerlessStack extends cdk.Stack {
       keySpec: kms.KeySpec.SYMMETRIC_DEFAULT,
     });
 
+    const openSearchSecGrp = new ec2.SecurityGroup(this, `${props.resourcePrefix}-OpenSearch-Security-Group`, {
+      vpc,
+      allowAllOutbound: false,
+      description: `${props.resourcePrefix}-OpenSearch-Security-Group`,
+    });
+    openSearchSecGrp.applyRemovalPolicy(cdk.RemovalPolicy.DESTROY);
+
     const opensearchDomain = new opensearch.Domain(this, `${props.resourcePrefix}-OpenSearchDomain`, {
       vpc: vpc,
+      securityGroups: [openSearchSecGrp],
       vpcSubnets: [vpcSubnetSelection],
       version: opensearch.EngineVersion.OPENSEARCH_2_17,
       enableAutoSoftwareUpdate: true,
@@ -77,6 +85,13 @@ export class AwsOpensearchServerlessStack extends cdk.Stack {
         availabilityZoneCount: 3,
       },
       useUnsignedBasicAuth: false,
+      capacity: {
+        masterNodes: 1,
+        masterNodeInstanceType: 'C7g.large.search',
+        dataNodes: 3,
+        dataNodeInstanceType: 'C7g.large.search',
+        multiAzWithStandbyEnabled: false,
+      },
       accessPolicies: [
         new iam.PolicyStatement({
           effect: iam.Effect.ALLOW,
