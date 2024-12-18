@@ -1,6 +1,6 @@
 {
   "name": "aws-opensearch-serverless",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "bin": {
     "aws-opensearch-serverless": "bin/aws-opensearch-serverless.js"
   },
