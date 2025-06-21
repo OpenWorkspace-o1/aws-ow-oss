@@ -42,7 +42,7 @@ export class AwsOpensearchServerlessStack extends cdk.Stack {
       availabilityZones: props.vpcPrivateSubnetAzs,
     });
 
-    const kmsKey = new kms.Key(this, `${props.resourcePrefix}-OS-KMS-Key`, {
+    const ossKmsKey = new kms.Key(this, `${props.resourcePrefix}-OSS-KMS-Key`, {
       enableKeyRotation: true,
       removalPolicy: cdk.RemovalPolicy.DESTROY,
       enabled: true,
@@ -65,7 +65,7 @@ export class AwsOpensearchServerlessStack extends cdk.Stack {
       enableAutoSoftwareUpdate: true,
       enableVersionUpgrade: true,
       encryptionAtRest: {
-        kmsKey: kmsKey,
+        kmsKey: ossKmsKey,
         enabled: true,
       },
       nodeToNodeEncryption: true,
@@ -130,14 +130,14 @@ export class AwsOpensearchServerlessStack extends cdk.Stack {
 
     // export kmsKey key id
     new cdk.CfnOutput(this, `${props.resourcePrefix}-OpenSearch-KMS-Key-Id-Output`, {
-      value: kmsKey.keyId,
+      value: ossKmsKey.keyId,
       exportName: `${props.resourcePrefix}-OpenSearch-KMS-Key-Id`,
       description: 'OpenSearch KMS Key Id',
     });
 
     // export kmsKey key arn
     new cdk.CfnOutput(this, `${props.resourcePrefix}-OpenSearch-KMS-Key-Arn-Output`, {
-      value: kmsKey.keyArn,
+      value: ossKmsKey.keyArn,
       exportName: `${props.resourcePrefix}-OpenSearch-KMS-Key-Arn`,
       description: 'OpenSearch KMS Key Arn',
     });
