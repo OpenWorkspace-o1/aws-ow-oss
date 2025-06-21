@@ -141,5 +141,12 @@ export class AwsOpensearchServerlessStack extends cdk.Stack {
       exportName: `${props.resourcePrefix}-OpenSearch-KMS-Key-Arn`,
       description: 'OpenSearch KMS Key Arn',
     });
+
+    // export openSearchSecGrp security group id
+    new cdk.CfnOutput(this, `${props.resourcePrefix}-OpenSearch-Security-Group-Id-Output`, {
+      value: openSearchSecGrp.securityGroupId,
+      exportName: `${props.resourcePrefix}-OpenSearch-Security-Group-Id`,
+      description: 'OpenSearch Security Group Id',
+    });
   }
 }
